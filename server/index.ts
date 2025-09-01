@@ -1,10 +1,30 @@
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import authRoutes from "./routes/auth.js";
+import { 
+  generalLimiter, 
+  corsOptions, 
+  helmetOptions, 
+  errorHandler, 
+  requestLogger, 
+  securityHeaders 
+} from "./middleware/security.js";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Security middleware
+app.use(helmet(helmetOptions));
+app.use(cors(corsOptions));
+app.use(securityHeaders);
+app.use(generalLimiter);
+app.use(requestLogger);
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -37,15 +57,13 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Register authentication routes
+  app.use('/api/auth', authRoutes);
+  
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
+  // Use comprehensive error handler
+  app.use(errorHandler);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route

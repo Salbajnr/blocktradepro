@@ -1,0 +1,36 @@
+run = "npm run dev"
+modules = ["nodejs-20", "web", "bash"]
+[nix]
+channel = "stable-25_05"
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
+
+[workflows]
+runButton = "Development Server"
+
+[[workflows.workflow]]
+name = "Install Dependencies"
+author = 40669021
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run install:all"
+
+[[workflows.workflow]]
+name = "Development Server"
+author = 40669021
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5173
+externalPort = 3000

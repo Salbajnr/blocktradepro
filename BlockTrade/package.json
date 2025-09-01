@@ -1,0 +1,31 @@
+{
+  "name": "blocktrade-locally",
+  "version": "1.0.0",
+  "description": "BlockTrade - Cryptocurrency Trading Platform",
+  "scripts": {
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "dev": "concurrently \"npm run client\" \"npm run server\" --names \"CLIENT,SERVER\" --prefix-colors \"cyan,yellow\"",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "test": "echo \"No tests specified\" && exit 0",
+    "setup:db": "cd server && node setup-database.js",
+    "setup": "npm run install:all && npm run setup:db"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "dependencies": {
+    "@ai-sdk/google": "^1.2.22",
+    "@types/node": "^24.0.14",
+    "ai": "^4.3.19",
+    "nodejs": "^0.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
