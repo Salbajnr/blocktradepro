@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { OrderBook } from "@/components/trading/order-book";
+import { PriceChart } from "@/components/trading/price-chart";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { formatCurrency } from "@/lib/trading";
@@ -133,16 +134,13 @@ export function Trade() {
           </CardContent>
         </Card>
 
-        {/* Chart Area */}
-        <Card className="chart-animation" style={{ height: "400px" }}>
-          <CardContent className="p-6 h-full flex items-center justify-center text-muted-foreground">
-            <div className="text-center" data-testid="chart-placeholder">
-              <i className="fas fa-chart-line text-4xl mb-4" />
-              <p>Interactive Price Chart</p>
-              <p className="text-sm">Chart implementation would go here</p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Interactive Price Chart */}
+        <PriceChart 
+          symbol={selectedSymbol} 
+          timeframe={timeframe} 
+          currentPrice={selectedStock ? parseFloat(selectedStock.currentPrice) : 0}
+          onTimeframeChange={setTimeframe}
+        />
 
         {/* Order Book */}
         <OrderBook symbol={selectedSymbol} />
