@@ -15,8 +15,10 @@ import {
 
 const app = express();
 
-// Security middleware
-app.use(helmet(helmetOptions));
+// Security middleware (CSP disabled in development for Vite)
+if (process.env.NODE_ENV === 'production') {
+  app.use(helmet(helmetOptions));
+}
 app.use(cors(corsOptions));
 app.use(securityHeaders);
 app.use(generalLimiter);
